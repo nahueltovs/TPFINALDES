@@ -20,4 +20,28 @@ public class Opciones {
                 break;
         }
     }
+    public static void agregarAvion (Avion[] listaAviones, Avion nuevoAvion){
+        
+    }
+    public static boolean cumpleStandar (Avion unAvion){
+        String codigoAvion = unAvion.getIDavion().toUpperCase();
+        String aux = "0123456789";
+        int i = 0;
+        boolean cumplio = true;
+        if (codigoAvion.length()>=6 || codigoAvion.length()<=8){
+            while (cumplio && i<=codigoAvion.length()){
+                if (codigoAvion.charAt(i)=='L'){
+                    i++;
+                    if(codigoAvion.charAt(i)=='Q'){
+                        
+                    }
+                }else{
+                    cumplio=false;
+                }
+            }
+        }else{
+            cumplio=false;
+        }
+        return cumplio;
+    }
 }

@@ -2,22 +2,18 @@ package TDA;
 
 public class Vuelo {
     private String codVuelo;
-    private Avion codAvion;
-    private Ruta numRuta;
+    private Avion avionVuelo;
+    private Ruta rutaVuelo;
     private String semDia;
     private String horaDia;
-    private Avion[] aviones;
-    private Ruta[] rutas;
 
     //CONSTRUCTORES
     public Vuelo (String unVuelo){
         this.codVuelo = unVuelo;
-        this.codAvion = null;
-        this.numRuta = null;
+        this.avionVuelo = null;
+        this.rutaVuelo = null;
         this.semDia = "";
         this.horaDia = "";
-        this.aviones = new Avion[20];
-        this.rutas = new Ruta[20];
     }
 
     //VISUALIZADORES
@@ -25,10 +21,10 @@ public class Vuelo {
         return this.codVuelo;
     }
     public Avion getAvion(){
-        return this.codAvion;
+        return this.avionVuelo;
     }
     public Ruta getRuta(){
-        return this.numRuta;
+        return this.rutaVuelo;
     }
     public String getDia(){
         return this.semDia;
@@ -36,38 +32,23 @@ public class Vuelo {
     public String getHora(){
         return this.horaDia;
     }
+    public boolean equals(Vuelo unVuelo){
+        return this.codVuelo==unVuelo.getVuelo();
+    }
+    public String toString(){
+        return "Codigo vuelo: "+this.codVuelo+" En el avion con codigo: "+this.avionVuelo.getIDavion()+" Con ruta: " +this.rutaVuelo.getNumRuta()+
+        " El dia: "+this.semDia+" A la hora: "+this.horaDia;
+    }
 
     //MODIFICADORES
     public void setVuelo(String unVuelo){
         this.codVuelo = unVuelo;
     }
     public void setAvion (Avion unAvion){
-        boolean existe = false;
-        int i = 0;
-        while (!existe && i<aviones.length){
-            if(unAvion.equals(aviones[i])){
-                existe = true;
-                this.codAvion = unAvion;
-            }
-            i++;
-        }
-        if (!existe){
-            System.out.println("El avion ingresado no existe");
-        }
+       this.avionVuelo = unAvion;
     }
     public void setRuta (Ruta unaRuta){
-        boolean existe = false;
-        int i = 0;
-        while (!existe && i<rutas.length){
-            if (unaRuta.equals(rutas[i])){
-                existe = true;
-                this.numRuta = unaRuta;
-            }
-            i++;
-        }
-        if (!existe){
-            System.out.println("La ruta ingresada no existe");
-        }
+        this.rutaVuelo = unaRuta;
     }
     public void setDia(String unDia){
         this.semDia = unDia;
