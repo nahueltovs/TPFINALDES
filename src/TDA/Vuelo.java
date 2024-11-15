@@ -56,4 +56,9 @@ public class Vuelo {
     public void setHora(String unaHora){
         this.horaDia = unaHora;
     }
+
+    //Propias del tipo
+    public int getDistVuelo(){
+        return this.rutaVuelo.getDist();
+    }
 }

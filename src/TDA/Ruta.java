@@ -61,4 +61,5 @@ public class Ruta {
     public void setInternacional(String esInter){
         this.interNacional = esInter;
     }
+    
 }
