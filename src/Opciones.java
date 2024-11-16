@@ -69,19 +69,42 @@ public class Opciones {
     //PUNTO8: Dado un rango formado por dos distancias (solicitar al usuario)
     //devolver en un arreglo todos los vuelos cuya ruta tenga una distancia comprendida en ese rango.
     public static Vuelo[] distComprendidas (Vuelo[]listaVuelos){
+        //Genero un arreglo de 50 vuelos auxiliar para no recorrer dos veces la lista de vuelos
+        Vuelo[] vuelosComprendidos = new Vuelo[100];
         int dist1,dist2,i,j;
         i=0;
         j=0;
-        System.out.println("Ingrese la primera distancia: ");
+        System.out.println("Ingrese la primera distancia (menor): ");
         dist1 = Integer.parseInt(sc.nextLine());
-        System.out.println("Ingrese la segunda distancia: ");
+        System.out.println("Ingrese la segunda distancia (mayor): ");
         dist2 = Integer.parseInt(sc.nextLine());
         while(listaVuelos[i]!=null && i<=listaVuelos.length){
-            if ((listaVuelos[i].getDistVuelo()>=dist1&&listaVuelos[i].getDistVuelo()<=dist2)||
-            (listaVuelos[i].getDistVuelo()<=dist1&&listaVuelos[i].getDistVuelo()>=dist2)){
+            if ((listaVuelos[i].getDistVuelo()>=dist1&&listaVuelos[i].getDistVuelo()<=dist2)){
+                vuelosComprendidos[j] = listaVuelos[i];
+                j++;
+            }
+            i++;
+        }
+        return vuelosComprendidos;
+    }
 
+    //PUNTO9: Calcular en forma recursiva la cantidad de horarios sin vuelos en la semana.
+    public static int horariosSinVuelos (Vuelo[][] elSistema, int i, int j, int aux){
+        int sinVuelos = 0;
+        if (i>= elSistema.length){
+            sinVuelos = aux;
+        }else{
+            if (j>=elSistema[0].length){
+                sinVuelos = horariosSinVuelos(elSistema, i+1, 0, aux);
+            }else{
+                if(elSistema[i][j]==null){
+                    aux++;
+                }
+                sinVuelos = horariosSinVuelos(elSistema, i, j+1, aux);
             }
         }
+        return sinVuelos;
     }
+    
 
 }
