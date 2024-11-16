@@ -70,20 +70,31 @@ public class Opciones {
     //devolver en un arreglo todos los vuelos cuya ruta tenga una distancia comprendida en ese rango.
     public static Vuelo[] distComprendidas (Vuelo[]listaVuelos){
         //Genero un arreglo de 50 vuelos auxiliar para no recorrer dos veces la lista de vuelos
-        Vuelo[] vuelosComprendidos = new Vuelo[100];
+        Vuelo[] vuelosFiltrados = new Vuelo[100];
         int dist1,dist2,i,j;
         i=0;
         j=0;
-        System.out.println("Ingrese la primera distancia (menor): ");
-        dist1 = Integer.parseInt(sc.nextLine());
-        System.out.println("Ingrese la segunda distancia (mayor): ");
-        dist2 = Integer.parseInt(sc.nextLine());
-        while(listaVuelos[i]!=null && i<=listaVuelos.length){
+        do {
+            System.out.println("Ingrese la primera distancia (menor): ");
+            dist1 = Integer.parseInt(sc.nextLine());
+            System.out.println("Ingrese la segunda distancia (mayor): ");
+            dist2 = Integer.parseInt(sc.nextLine());
+    
+            if (dist1 > dist2) {
+                System.out.println("Error: La primera distancia debe ser menor que la segunda. Intente nuevamente.");
+            }
+        } while (dist1 > dist2);
+        while(i<listaVuelos.length && listaVuelos[i]!=null){
             if ((listaVuelos[i].getDistVuelo()>=dist1&&listaVuelos[i].getDistVuelo()<=dist2)){
-                vuelosComprendidos[j] = listaVuelos[i];
+                vuelosFiltrados[j] = listaVuelos[i];
                 j++;
             }
             i++;
+        }
+        //CREO EL ARREGLO FINAL QUE VOY A DEVOLVER USANDO EL AUXILIAR. DE ESTA FORMA NO TENDRA ESPACIOS NULOS
+        Vuelo[] vuelosComprendidos = new Vuelo[j];
+        for (int k =0; k<j; k++){
+            vuelosComprendidos[k]=vuelosFiltrados[k];
         }
         return vuelosComprendidos;
     }
@@ -105,6 +116,6 @@ public class Opciones {
         }
         return sinVuelos;
     }
-    
+
 
 }
