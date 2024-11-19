@@ -53,12 +53,16 @@ public class Avion {
         this.modAvion = unModelo;
     }
     public void setVuelos(int unaCantVuelos){
-        this.cantVuelos += unaCantVuelos;
+        if (unaCantVuelos >=0){
+            this.cantVuelos += unaCantVuelos;
+        }
     }
     public void setAsientos(int unaCantAsien){
         this.cantAsientos = unaCantAsien;
     }
     public void setKMrecor(int unaCantKM){
-        this.kmRecorridos += unaCantKM;
+        if (unaCantKM >=0){
+            this.kmRecorridos += unaCantKM;
+        }
     }
 }

@@ -15,6 +15,13 @@ public class Vuelo {
         this.semDia = "";
         this.horaDia = "";
     }
+    public Vuelo (String unVuelo, Avion unAvion, Ruta unaRuta, String diaSemana, String unaHora){
+        this.codVuelo = unVuelo;
+        this.avionVuelo = unAvion;
+        this.rutaVuelo = unaRuta;
+        this.semDia = diaSemana;
+        this.horaDia = unaHora;
+    }
 
     //VISUALIZADORES
     public String getVuelo(){
@@ -36,8 +43,8 @@ public class Vuelo {
         return this.codVuelo==unVuelo.getVuelo();
     }
     public String toString(){
-        return "Codigo vuelo: "+this.codVuelo+" En el avion con codigo: "+this.avionVuelo.getIDavion()+" Con ruta: " +this.rutaVuelo.getNumRuta()+
-        " El dia: "+this.semDia+" A la hora: "+this.horaDia;
+        return "Codigo vuelo: "+this.codVuelo+" Codigo avion: "+this.avionVuelo.getIDavion()+" Numero ruta: " +this.rutaVuelo.getNumRuta()+
+        " Dia: "+this.semDia+" Hora: "+this.horaDia;
     }
 
     //MODIFICADORES
