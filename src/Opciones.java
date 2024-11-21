@@ -20,29 +20,50 @@ public class Opciones {
                 break;
         }
     }
-    public static void agregarAvion (Avion[] listaAviones, Avion nuevoAvion){
-        
-    }
-    public static boolean cumpleStandar (Avion unAvion){
-        String codigoAvion = unAvion.getIDavion().toUpperCase();
-        String aux = "0123456789";
-        int i = 0;
-        boolean cumplio = true;
-        if (codigoAvion.length()>=6 || codigoAvion.length()<=8){
-            while (cumplio && i<=codigoAvion.length()){
-                if (codigoAvion.charAt(i)=='L'){
-                    i++;
-                    if(codigoAvion.charAt(i)=='Q'){
-                        
-                    }
-                }else{
-                    cumplio=false;
-                }
-            }
+    
+    //PUNTO 2: Agregar un nuevo avión a la lista de aviones.
+    public static void agregarAvion (Avion[]listAviones){
+        String patente;
+        boolean bandera = false;
+        int i =0;
+        System.out.println("Ingrese el ID del neuvo avion, en mayusculas, respetando que cumple el Estandar internacional");
+        patente = sc.nextLine();
+        if (verificarExiste(listAviones, patente)){
+            System.out.println("Error, el avion ya existe");
         }else{
-            cumplio=false;
+            if (Avion.verifIDAvion(patente)){
+                while (i<listAviones.length && !bandera){
+                    if (listAviones[i]==null){
+                        System.out.println("Ingrese el modelo del avion: ");
+                        String modelo = sc.nextLine();
+                        System.out.println("Ingrese la cantidad de vuelos del avion: ");
+                        int vuelos = Integer.parseInt(sc.nextLine());
+                        System.out.println("Ingrese la cantidad de asientos del avion: ");
+                        int asientos = Integer.parseInt(sc.nextLine());
+                        System.out.println("Ingrese la cantidad de kilometros recorridos del avion: ");
+                        int kmRecorridos = Integer.parseInt(sc.nextLine());
+                        listAviones[i] = new Avion(patente, modelo, vuelos, asientos, kmRecorridos);
+                        System.out.println("El avion ha sido agregado correctamente");
+                        bandera = true;
+                    }
+                i++;
+                }
+            }else{
+                System.out.println("La patente no cumple con el Estandar internacional");
+            }
         }
-        return cumplio;
+    }
+
+    //PARA VER SI EXISTE EL AVION
+    public static boolean verificarExiste (Avion[] listaAviones, String patente){
+        boolean existe = false;
+        int i = 0;
+        while(listaAviones[i]!=null && i<listaAviones.length && !existe){
+            if (patente.equals(listaAviones[i].getIDavion())){
+                existe = true;
+            }
+        }
+        return existe;
     }
 
     //PUNTO 7: Mostrar los datos de un avión dado
@@ -55,7 +76,7 @@ public class Opciones {
         //AGREGAR METODO DE SI CUMPLE ESTANDARD Y SI EXSITE EN LA LISTA DE AVIONES TAMBIEN ES POSIBLE PARA
         //EVITAR EL CASO EN EL QUE SI NO SE ENCUENTRA
         while (!encontro && listaAviones[i]!=null && i<=listaAviones.length){
-            if (codAvion==listaAviones[i].getIDavion()){
+            if (codAvion.equals(listaAviones[i].getIDavion())){
                 encontro = true;
                 System.out.println("Los datos del avion son: " +listaAviones[i].toString());
             }
@@ -116,6 +137,82 @@ public class Opciones {
         }
         return sinVuelos;
     }
+    //PUNTO10: Mostrar para cada día de la semana el primer horario en que hay un vuelo internacional. Si no hay, emitir un mensaje adecuado.
+    public static void vueloInternacional (Vuelo[][] elSistema){
+        for(int i=0; i<elSistema.length; i++){
+            boolean bandera = false;
+            for(int j=0; j<elSistema[0].length; j++){
+                if (elSistema[i][j].getInternacionalVuelo().equalsIgnoreCase("si")){
+                    System.out.println("Hay un vuelo internacional en el horario de las: "+(j+8)+"hs"+" El dia: "+" "+diaAString(i));
+                    bandera = true;
+                    break;
+                }
+            }
+            if (!bandera){
+                System.out.println("No se encontraron vuelos internacionales el dia: " +" "+diaAString(i));
+            }
+        }
+    }
 
+    //USADO EN LA CARGA
+    public static int buscarPosRuta(Ruta[] rutas, String numeroRuta){
+        int pos = -1;
+        boolean encontrado = false;
+        int i = 0;
+        while(i < rutas.length && !encontrado){
+          if(rutas[i] != null && rutas[i].getNumRuta().equalsIgnoreCase(numeroRuta)){
+            pos = i;
+            encontrado = true;
+          }
+          i++;
+        }
+        return pos;
+      }
 
+      public static int buscarPosAvion(Avion[] aviones, String matricula){
+        int pos = -1;
+        boolean encontrado = false;
+        int i = 0;
+        while(i < aviones.length && !encontrado){
+          if(aviones[i] != null && aviones[i].getIDavion().equalsIgnoreCase(matricula)){
+            pos = i;
+            encontrado = true;
+          }
+          i++;
+        }
+        return pos;
+      }
+
+      public static String diaAString (int num){
+        String dia;
+        switch (num) {
+            case 0:
+                dia = "Lunes";
+                break;
+            case 1:
+                dia = "Martes";
+                break;
+            case 2:
+                dia = "Miércoles";
+                break;
+            case 3:
+                dia = "Jueves";
+                break;
+            case 4:
+                dia = "Viernes";
+                break;
+            case 5:
+                dia = "Sábado";
+                break;
+            case 6:
+                dia = "Domingo";
+                break;
+            default:
+                dia = "Número inválido";
+                break;
+        }
+        return dia;
+    }
 }
+
+

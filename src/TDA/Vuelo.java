@@ -40,7 +40,7 @@ public class Vuelo {
         return this.horaDia;
     }
     public boolean equals(Vuelo unVuelo){
-        return this.codVuelo==unVuelo.getVuelo();
+        return this.codVuelo.equals(unVuelo.getVuelo());
     }
     public String toString(){
         return "Codigo vuelo: "+this.codVuelo+" Codigo avion: "+this.avionVuelo.getIDavion()+" Numero ruta: " +this.rutaVuelo.getNumRuta()+
@@ -67,5 +67,8 @@ public class Vuelo {
     //Propias del tipo
     public int getDistVuelo(){
         return this.rutaVuelo.getDist();
+    }
+    public String getInternacionalVuelo(){
+        return this.rutaVuelo.getInter();
     }
 }

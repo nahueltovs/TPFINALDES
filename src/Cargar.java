@@ -37,33 +37,6 @@ public class Cargar {
 
     }
 
-    public static int buscarPosAvion(Avion[] aviones, String matricula){
-      int pos = -1;
-      boolean encontrado = false;
-      int i = 0;
-      while(i < aviones.length && !encontrado){
-        if(aviones[i] != null && aviones[i].getIDavion().equalsIgnoreCase(matricula)){
-          pos = i;
-          encontrado = true;
-        }
-        i++;
-      }
-      return pos;
-    }
-    public static int buscarPosRuta(Ruta[] rutas, String numeroRuta){
-        int pos = -1;
-        boolean encontrado = false;
-        int i = 0;
-        while(i < rutas.length && !encontrado){
-          if(rutas[i] != null && rutas[i].getNumRuta().equalsIgnoreCase(numeroRuta)){
-            pos = i;
-            encontrado = true;
-          }
-          i++;
-        }
-        return pos;
-      }
-
     public static Avion[] cargarAviones(){
       Avion[] aviones = new Avion[50];
       // O sea digamos, al utilizar diferentes sistemas operativos, no trabajan las direcciones de la misma manera
@@ -142,8 +115,8 @@ public class Cargar {
                   String[] datos = Files.readAllLines(archivo.toPath()).get(i).split(";");
                   //VALIDO QUE LA LINEA NO ESTE VACIA
                   if(datos != null){
-                    int posAvion = buscarPosAvion(aviones, datos[1]);
-                    int posRuta = buscarPosRuta(rutas, datos[2]);
+                    int posAvion = Opciones.buscarPosAvion(aviones, datos[1]);
+                    int posRuta = Opciones.buscarPosRuta(rutas, datos[2]);
                     System.out.println("Posicion avion: " + posAvion);
                     System.out.println("Posicion ruta: " + posRuta);
                     if(posAvion != -1 && posRuta != -1){

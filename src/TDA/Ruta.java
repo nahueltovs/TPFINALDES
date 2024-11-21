@@ -41,7 +41,7 @@ public class Ruta {
         return this.interNacional;
     }
     public boolean equals(Ruta unaRuta){
-        return this.numRuta==unaRuta.getNumRuta();
+        return this.numRuta.equals(unaRuta.getNumRuta());
     }
     public String toString(){
         return "Número ruta: "+this.numRuta+" Ciudad origen: "+this.ciudadOri+

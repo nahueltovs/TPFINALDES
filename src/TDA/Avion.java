@@ -41,7 +41,7 @@ public class Avion {
         return this.kmRecorridos;
     }
     public boolean equals (Avion unAvion){
-        return this.idAvion==unAvion.getIDavion();
+        return this.idAvion.equals(unAvion.getIDavion());
     }
     public String toString (){
         return "ID avion: " +this.idAvion + " Modelo: " +this.modAvion + " Cantidad de vuelos: " +this.cantVuelos + 
@@ -64,5 +64,27 @@ public class Avion {
         if (unaCantKM >=0){
             this.kmRecorridos += unaCantKM;
         }
+    }
+
+    //PROPIAS DEL TIPO
+    public static boolean verifIDAvion(String unaPatente){
+        String[] patenteArr = unaPatente.split("-");
+        boolean res = false;
+        // Expresion regular verifica que el string este formado por 3 letras
+        String regLetras = "[A-Z]{3}";
+        // Expresion regular verifica que el string contenga 3 numeros seguidos
+        String regNumeros = "[0-9]{3}";
+
+        // Primer caso verifica que empiece con "LV" si no con LQ, en caso contrario res seguria siendo falso.
+        if(patenteArr[0].equalsIgnoreCase("LV")) {
+            if(patenteArr[1].matches(regLetras)) {
+                res = true;
+            }else if(patenteArr[1].startsWith("X") ||patenteArr[1].startsWith("S") || patenteArr[1].startsWith("SX") && patenteArr[1].substring(1).matches(regNumeros)){
+                res = true;
+            }
+        }else if(patenteArr[0].equalsIgnoreCase("LQ") && patenteArr[1].matches(regLetras)){
+            res = true;
+        }
+        return res;
     }
 }
