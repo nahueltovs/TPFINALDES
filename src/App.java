@@ -6,8 +6,7 @@ public class App {
     public static void main(String[] args) throws Exception {
         Avion[] aviones = new Avion[50];
         Ruta[] rutas = new Ruta[50];
-        Vuelo[] vuelos = new Vuelo[150];
-        Vuelo[][] sistema = new Vuelo[7][14];
+        Vuelo[][] cronoVuelos= new Vuelo[7][14];
     }
 
 }

@@ -6,6 +6,7 @@ public class Vuelo {
     private Ruta rutaVuelo;
     private String semDia;
     private String horaDia;
+    private boolean avionAterrizo;
 
     //CONSTRUCTORES
     public Vuelo (String unVuelo){
@@ -14,6 +15,7 @@ public class Vuelo {
         this.rutaVuelo = null;
         this.semDia = "";
         this.horaDia = "";
+        this.avionAterrizo = false;
     }
     public Vuelo (String unVuelo, Avion unAvion, Ruta unaRuta, String diaSemana, String unaHora){
         this.codVuelo = unVuelo;
@@ -21,6 +23,7 @@ public class Vuelo {
         this.rutaVuelo = unaRuta;
         this.semDia = diaSemana;
         this.horaDia = unaHora;
+        this.avionAterrizo = false;
     }
 
     //VISUALIZADORES
@@ -38,6 +41,9 @@ public class Vuelo {
     }
     public String getHora(){
         return this.horaDia;
+    }
+    public boolean getAterrizo(){
+        return this.avionAterrizo;
     }
     public boolean equals(Vuelo unVuelo){
         return this.codVuelo.equals(unVuelo.getVuelo());
@@ -62,6 +68,9 @@ public class Vuelo {
     }
     public void setHora(String unaHora){
         this.horaDia = unaHora;
+    }
+    public void setAterrizo(boolean unaOrden){
+        this.avionAterrizo = unaOrden;
     }
 
     //Propias del tipo

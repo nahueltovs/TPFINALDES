@@ -66,6 +66,12 @@ public class Opciones {
         return existe;
     }
 
+    //PUNTO 4: Marcar la realización efectiva de un vuelo, es decir, poder determinar cuando el vuelo aterriza en la ciudad destino.
+    //En esta opción se deberán actualizar los datos de los aviones de acuerdo al vuelo realizado (cantidad de vuelos y kilómetros recorridos)
+    public static void confirmVuelo (Vuelo[][] cronograma, Avion[] aviones, Ruta[] rutas){
+
+    }
+
     //PUNTO 7: Mostrar los datos de un avión dado
     public static void mostrarDatAvion(Avion[] listaAviones){
         String codAvion;
@@ -73,23 +79,23 @@ public class Opciones {
         boolean encontro = false;
         System.out.println("Ingrese el codigo del avion para ver sus datos: ");
         codAvion = sc.nextLine();
-        //AGREGAR METODO DE SI CUMPLE ESTANDARD Y SI EXSITE EN LA LISTA DE AVIONES TAMBIEN ES POSIBLE PARA
-        //EVITAR EL CASO EN EL QUE SI NO SE ENCUENTRA
-        while (!encontro && listaAviones[i]!=null && i<=listaAviones.length){
-            if (codAvion.equals(listaAviones[i].getIDavion())){
-                encontro = true;
-                System.out.println("Los datos del avion son: " +listaAviones[i].toString());
+        if (Avion.verifIDAvion(codAvion)){
+            while (!encontro && listaAviones[i]!=null && i<=listaAviones.length){
+                if (codAvion.equals(listaAviones[i].getIDavion())){
+                    encontro = true;
+                    System.out.println("Los datos del avion son: " +listaAviones[i].toString());
+                }
+                i++;
             }
-            i++;
-        }
-        if (!encontro){
-            System.out.println("No se encontro el avion solicitado");
+            if (!encontro){
+                System.out.println("No se encontro el avion solicitado");
+            }
         }
     }
 
     //PUNTO8: Dado un rango formado por dos distancias (solicitar al usuario)
     //devolver en un arreglo todos los vuelos cuya ruta tenga una distancia comprendida en ese rango.
-    public static Vuelo[] distComprendidas (Vuelo[]listaVuelos){
+    public static Vuelo[] distComprendidas (Vuelo[][]cronogramaVuelos){
         //Genero un arreglo de 50 vuelos auxiliar para no recorrer dos veces la lista de vuelos
         Vuelo[] vuelosFiltrados = new Vuelo[100];
         int dist1,dist2,i,j;
@@ -105,12 +111,15 @@ public class Opciones {
                 System.out.println("Error: La primera distancia debe ser menor que la segunda. Intente nuevamente.");
             }
         } while (dist1 > dist2);
-        while(i<listaVuelos.length && listaVuelos[i]!=null){
-            if ((listaVuelos[i].getDistVuelo()>=dist1&&listaVuelos[i].getDistVuelo()<=dist2)){
-                vuelosFiltrados[j] = listaVuelos[i];
-                j++;
+        for (int fila = 0; fila < cronogramaVuelos.length; fila++) {
+            for (int col = 0; col < cronogramaVuelos[fila].length; col++) {
+                if (cronogramaVuelos[fila][col] != null) { // Evitar valores nulos
+                    if (cronogramaVuelos[fila][col].getDistVuelo() >= dist1 && cronogramaVuelos[fila][col].getDistVuelo() <= dist2) {
+                        vuelosFiltrados[j] = cronogramaVuelos[fila][col];
+                        j++;
+                    }
+                }
             }
-            i++;
         }
         //CREO EL ARREGLO FINAL QUE VOY A DEVOLVER USANDO EL AUXILIAR. DE ESTA FORMA NO TENDRA ESPACIOS NULOS
         Vuelo[] vuelosComprendidos = new Vuelo[j];
@@ -141,12 +150,13 @@ public class Opciones {
     public static void vueloInternacional (Vuelo[][] elSistema){
         for(int i=0; i<elSistema.length; i++){
             boolean bandera = false;
-            for(int j=0; j<elSistema[0].length; j++){
-                if (elSistema[i][j].getInternacionalVuelo().equalsIgnoreCase("si")){
-                    System.out.println("Hay un vuelo internacional en el horario de las: "+(j+8)+"hs"+" El dia: "+" "+diaAString(i));
+            int j=0;
+            while (j < elSistema[0].length && !bandera) {
+                if (elSistema[i][j].getInternacionalVuelo().equalsIgnoreCase("si")) {
+                    System.out.println("Hay un vuelo internacional en el horario de las: " + (j + 8) + "hs" + " El dia: " + " " + diaAString(i));
                     bandera = true;
-                    break;
                 }
+                j++;
             }
             if (!bandera){
                 System.out.println("No se encontraron vuelos internacionales el dia: " +" "+diaAString(i));
