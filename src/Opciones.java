@@ -7,17 +7,58 @@ import TDA.Vuelo;
 public class Opciones {
     private final static Scanner sc = new Scanner(System.in);
 
-    public static void procOpciones(String a){
+    public static void procOpciones(Vuelo[][] vuelos, Avion[] aviones, Ruta[] rutas) {
         boolean bandera = true;
-        System.out.println("Ingrese opcion: ");
-        int respuesta = Integer.parseInt(sc.nextLine());
-        switch (respuesta) {
-            case 0:
-                bandera = false;
-                break;
-        
-            default:
-                break;
+    
+        while (bandera) {
+            try {
+                System.out.println("\nSeleccione una opcion: ");
+                int respuesta = Integer.parseInt(sc.nextLine());
+    
+                switch (respuesta) {
+                    case 0:
+                        bandera = false;
+                        System.out.println("Saliendo del programa...");
+                        break;
+                    case 1:
+                        Cargar.cargarArchivos();
+                        break;
+                    case 2:
+                        agregarAvion(aviones);
+                        break;
+                    case 3:
+                        agregVuelo(vuelos, aviones, rutas);
+                        break;
+                    case 4:
+                        confirmVuelo(vuelos, aviones);
+                        break;
+                    case 5:
+                        pasajerosVolaron(vuelos, aviones);
+                        break;
+                    case 6:
+                        System.out.println("bruh");
+                        break;
+                    case 7:
+                        mostrarDatAvion(aviones);
+                        break;
+                    case 8:
+                        distComprendidas(vuelos);
+                        break;
+                    case 9:
+                        horariosSinVuelos(vuelos, 0, 0, 0);
+                        break;
+                    case 10:
+                        vueloInternacional(vuelos);
+                        break;
+                    default:
+                        System.out.println("Opcion invalida. Intente nuevamente.");
+                        break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Error: Debe ingresar un numero valido.");
+            } catch (Exception e) {
+                System.out.println("Ocurrio un error inesperado: " + e.getMessage());
+            }
         }
     }
     
@@ -65,12 +106,137 @@ public class Opciones {
         }
         return existe;
     }
+    public static boolean verificarRuta (Ruta[] listaRutas, String numRuta){
+        boolean existe = false;
+        int i = 0;
+        while(listaRutas[i]!=null && i<listaRutas.length && !existe){
+            if (numRuta.equals(listaRutas[i].getNumRuta())){
+                existe = true;
+            }
+        }
+        return existe;
+    }
 
+    //PUNTO 3:Agregar un nuevo vuelo al cronograma de vuelos de la semana
+    //solicitando el número de vuelo,  el avión, la hora y el día que debe ocurrir, la ruta que debe recorrer y la cantidad de pasajeros. 
+    //Se deberán hacer los controles correspondientes de acuerdo a las restricciones
+    //emitir mensajes al usuario en caso de que no se pueda cumplir con lo solicitado
+    public static void agregVuelo (Vuelo[][]cronograma, Avion[] aviones, Ruta[] rutas){
+        System.out.println("Ingrese el codigo del vuelo: ");
+        String codVuelo = sc.nextLine();
+        System.out.println("Ingrese el ID del avion: ");
+        String codAvion = sc.nextLine();
+        System.out.println("Ingrese el numero de la ruta: ");
+        String numRuta = sc.nextLine();
+        System.out.println("Ingrese el dia del vuelo: ");
+        String diaVuelo = sc.nextLine();
+        System.out.println("Ingrese la hora del vuelo(de 8 a 22): ");
+        String horaVuelo = sc.nextLine();
+
+        int dia = stringADia(diaVuelo);
+        int hora = Integer.parseInt(horaVuelo);
+
+        boolean datosValidos = true;
+
+        if (hora < 8 || hora>22){
+            System.out.println("Error la hora esta fuera del rango");
+            datosValidos = false;
+        }
+        if (datosValidos&& cronograma[dia][hora-8]!=null){
+            System.out.println("Ya se encontro un vuelo asignado a ese horario");
+            datosValidos = false;
+        }
+        if (datosValidos){
+            boolean existeAvion = verificarExiste(aviones, codAvion);
+            boolean existeRuta = verificarRuta(rutas, numRuta);
+            if (!existeAvion){
+                System.out.println("El avion ingresado no existe");
+            }
+            if (!existeRuta){
+                System.out.println("La ruta ingresada no existe");
+            }
+            if (existeAvion && existeRuta){
+                Avion elAvion = aviones[buscarPosAvion(aviones, codAvion)];
+                Ruta laRuta = rutas[buscarPosRuta(rutas, numRuta)];
+                if (elAvion!=null && laRuta!=null){
+                    cronograma[dia][hora-8] = new Vuelo(codVuelo, elAvion, laRuta, diaVuelo, horaVuelo+":00");
+                    System.out.println("Vuelo agregado exitosamente");
+                }
+            }
+        }
+    }
     //PUNTO 4: Marcar la realización efectiva de un vuelo, es decir, poder determinar cuando el vuelo aterriza en la ciudad destino.
     //En esta opción se deberán actualizar los datos de los aviones de acuerdo al vuelo realizado (cantidad de vuelos y kilómetros recorridos)
-    public static void confirmVuelo (Vuelo[][] cronograma, Avion[] aviones, Ruta[] rutas){
-
+    public static void confirmVuelo (Vuelo[][] cronograma, Avion[] aviones){
+        String vueloConfirmado;
+        Vuelo vueloEncontrado = null;
+        int i=0;
+        boolean encontrado = false;
+        System.out.println("Ingrese el codigo de vuelo (AR####) a actualizar: ");
+        vueloConfirmado = sc.nextLine();
+        while (i<cronograma.length && !encontrado){
+            int j=0;
+            while (j<cronograma[0].length && !encontrado){
+                if (cronograma[i][j].getVuelo().equals(vueloConfirmado)){
+                    vueloEncontrado = cronograma[i][j];
+                    encontrado = true;
+                }
+                j++;
+            }
+            i++;
+        }
+        if (encontrado){
+            vueloEncontrado.setAterrizo(true);
+            Avion avionAterrizado;
+            avionAterrizado = vueloEncontrado.getAvion();
+            if (avionAterrizado!=null){
+                avionAterrizado.setVuelos(1);
+                avionAterrizado.setKMrecor(vueloEncontrado.getDistVuelo());
+            }
+            System.out.println("Se han actualizado los datos del avion y vuelo.");
+        }else{
+            System.out.println("No se encontro el vuelo solicitado "+vueloConfirmado);
+        }
     }
+
+    //PUNTO 5: Calcular y mostrar el promedio de pasajeros que efectivamente volaron en forma recursiva 
+    //(suponiendo que el avión va con sus asientos completos).
+    //El promedio es de todos los vuelos que hay en la matriz que tengan la marca de haber aterrizado
+    public static void pasajerosVolaron (Vuelo[][] cronograma, Avion[] vuelos){
+        System.out.println("El promedio de los pasajeros que volaron es: "
+        + calcPasajeros(cronograma, 0, 0, 0)/(double) calcularPromedio(cronograma, 0, 0, 0));
+    }
+    //LOS METODOS SON PRIVADOS YA QUE SON SOLO ACCEDIDOS EN ESTA OPCION PARA LA CUENTA
+    private static int calcPasajeros (Vuelo[][] cronograma, int i, int j, int auxPasaj){
+        int cantPasaj = 0;
+        if (i>=cronograma.length){
+            cantPasaj = auxPasaj;
+            if (j>=cronograma[0].length){
+                cantPasaj = calcPasajeros(cronograma, i+1, 0, auxPasaj);
+            }else{
+                if (cronograma[i][j]!=null && cronograma[i][j].getAterrizo()){
+                    auxPasaj += cronograma[i][j].getCantAsientos();
+                }
+                cantPasaj = calcPasajeros(cronograma, i, j+1, auxPasaj);
+            }
+        }
+        return cantPasaj;
+    }
+    private static int calcularPromedio(Vuelo[][] cronograma, int i, int j, int contador) {
+        int promedio = contador;
+        if (i < cronograma.length){
+            if (j >= cronograma[i].length){
+                promedio = calcularPromedio(cronograma, i + 1, 0, contador);
+            }else{
+                if (cronograma[i][j] != null && cronograma[i][j].getAterrizo()){
+                    contador++;
+                }
+                promedio = calcularPromedio(cronograma, i, j + 1, contador);
+            }
+        }
+        return promedio;
+    }
+    //PUNTO6: 
 
     //PUNTO 7: Mostrar los datos de un avión dado
     public static void mostrarDatAvion(Avion[] listaAviones){
@@ -222,6 +388,36 @@ public class Opciones {
                 break;
         }
         return dia;
+    }
+    public static int stringADia(String dia) {
+        int num;
+        switch (dia.toLowerCase()) { // Convertir a minúsculas para evitar problemas con mayúsculas
+            case "lunes":
+                num = 0;
+                break;
+            case "martes":
+                num = 1;
+                break;
+            case "miercoles":
+                num = 2;
+                break;
+            case "jueves":
+                num = 3;
+                break;
+            case "viernes":
+                num = 4;
+                break;
+            case "sabado":
+                num = 5;
+                break;
+            case "domingo":
+                num = 6;
+                break;
+            default:
+                num = -1; // Número inválido
+                break;
+        }
+        return num;
     }
 }
 

@@ -80,4 +80,7 @@ public class Vuelo {
     public String getInternacionalVuelo(){
         return this.rutaVuelo.getInter();
     }
+    public int getCantAsientos(){
+        return this.avionVuelo.getAsientos();
+    }
 }
