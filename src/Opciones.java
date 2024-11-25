@@ -384,14 +384,14 @@ public class Opciones {
                 dia = "Domingo";
                 break;
             default:
-                dia = "Número inválido";
+                dia = "Numero invalido";
                 break;
         }
         return dia;
     }
     public static int stringADia(String dia) {
         int num;
-        switch (dia.toLowerCase()) { // Convertir a minúsculas para evitar problemas con mayúsculas
+        switch (dia.toLowerCase()) { // convierto a minusculas para ignorar como es ingresado
             case "lunes":
                 num = 0;
                 break;
@@ -414,7 +414,7 @@ public class Opciones {
                 num = 6;
                 break;
             default:
-                num = -1; // Número inválido
+                num = -1; // nunca sucedera
                 break;
         }
         return num;
