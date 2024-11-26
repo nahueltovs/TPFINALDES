@@ -12,7 +12,7 @@ public class Opciones {
     
         while (bandera) {
             try {
-                System.out.println("\nSeleccione una opcion: ");
+                System.out.println("Seleccione una opcion valida:\n1 - Agregar un nuevo avión a la lista de aviones\n2 - Agregar un nuevo vuelo al cronograma de vuelos de la semana\n3 - Marcar la realización efectiva de un vuelo\n4 - Calcular y mostrar el promedio de pasajeros que efectivamente volaron\n5 - Mostrar para un día dado, la lista de vuelos ordenada por distancia en kilómetros\n6 - Mostrar los datos de un avión dado\n7 - Dado un rango formado por dos distancias, devolver en un arreglo todos los vuelos cuya ruta tenga una distancia comprendida en ese rango\n8 - Calcular la cantidad de horarios sin vuelos en la semana\n9 - Mostrar para cada día de la semana el primer horario en que hay un vuelo internacional.");
                 int respuesta = Integer.parseInt(sc.nextLine());
     
                 switch (respuesta) {
@@ -21,33 +21,30 @@ public class Opciones {
                         System.out.println("Saliendo del programa...");
                         break;
                     case 1:
-                        Cargar.cargarArchivos();
-                        break;
-                    case 2:
                         agregarAvion(aviones);
                         break;
-                    case 3:
+                    case 2:
                         agregVuelo(vuelos, aviones, rutas);
                         break;
-                    case 4:
+                    case 3:
                         confirmVuelo(vuelos, aviones);
                         break;
-                    case 5:
+                    case 4:
                         pasajerosVolaron(vuelos, aviones);
                         break;
-                    case 6:
+                    case 5:
                         System.out.println("bruh");
                         break;
-                    case 7:
+                    case 6:
                         mostrarDatAvion(aviones);
                         break;
-                    case 8:
+                    case 7:
                         distComprendidas(vuelos);
                         break;
-                    case 9:
-                        horariosSinVuelos(vuelos, 0, 0, 0);
+                    case 8:
+                        System.out.println("La cantidad de horarios sin vuelos en la semana es de: "+horariosSinVuelos(vuelos, 0, 0, 0));
                         break;
-                    case 10:
+                    case 9:
                         vueloInternacional(vuelos);
                         break;
                     default:
@@ -67,7 +64,7 @@ public class Opciones {
         String patente;
         boolean bandera = false;
         int i =0;
-        System.out.println("Ingrese el ID del neuvo avion, en mayusculas, respetando que cumple el Estandar internacional");
+        System.out.println("Ingrese el ID del nuevo avion, en mayusculas, respetando que cumple el Estandar internacional");
         patente = sc.nextLine();
         if (verificarExiste(listAviones, patente)){
             System.out.println("Error, el avion ya existe");
@@ -103,6 +100,7 @@ public class Opciones {
             if (patente.equals(listaAviones[i].getIDavion())){
                 existe = true;
             }
+            i++;
         }
         return existe;
     }
@@ -110,9 +108,10 @@ public class Opciones {
         boolean existe = false;
         int i = 0;
         while(listaRutas[i]!=null && i<listaRutas.length && !existe){
-            if (numRuta.equals(listaRutas[i].getNumRuta())){
+            if (numRuta.equalsIgnoreCase(listaRutas[i].getNumRuta())){
                 existe = true;
             }
+            i++;
         }
         return existe;
     }
@@ -177,7 +176,7 @@ public class Opciones {
         while (i<cronograma.length && !encontrado){
             int j=0;
             while (j<cronograma[0].length && !encontrado){
-                if (cronograma[i][j].getVuelo().equals(vueloConfirmado)){
+                if (cronograma[i][j]!=null && cronograma[i][j].getVuelo().equalsIgnoreCase(vueloConfirmado)){
                     vueloEncontrado = cronograma[i][j];
                     encontrado = true;
                 }
@@ -205,12 +204,14 @@ public class Opciones {
     public static void pasajerosVolaron (Vuelo[][] cronograma, Avion[] vuelos){
         System.out.println("El promedio de los pasajeros que volaron es: "
         + calcPasajeros(cronograma, 0, 0, 0)/(double) calcularPromedio(cronograma, 0, 0, 0));
+        System.out.println("De: "+calcPasajeros(cronograma, 0, 0, 0)+" Pasajeros en: " + calcularPromedio(cronograma, 0, 0, 0) + " Vuelos confirmados");
     }
     //LOS METODOS SON PRIVADOS YA QUE SON SOLO ACCEDIDOS EN ESTA OPCION PARA LA CUENTA
     private static int calcPasajeros (Vuelo[][] cronograma, int i, int j, int auxPasaj){
         int cantPasaj = 0;
         if (i>=cronograma.length){
             cantPasaj = auxPasaj;
+        }else{
             if (j>=cronograma[0].length){
                 cantPasaj = calcPasajeros(cronograma, i+1, 0, auxPasaj);
             }else{
@@ -246,7 +247,7 @@ public class Opciones {
         System.out.println("Ingrese el codigo del avion para ver sus datos: ");
         codAvion = sc.nextLine();
         if (Avion.verifIDAvion(codAvion)){
-            while (!encontro && listaAviones[i]!=null && i<=listaAviones.length){
+            while (listaAviones[i]!=null && !encontro && i<=listaAviones.length){
                 if (codAvion.equals(listaAviones[i].getIDavion())){
                     encontro = true;
                     System.out.println("Los datos del avion son: " +listaAviones[i].toString());
@@ -261,11 +262,10 @@ public class Opciones {
 
     //PUNTO8: Dado un rango formado por dos distancias (solicitar al usuario)
     //devolver en un arreglo todos los vuelos cuya ruta tenga una distancia comprendida en ese rango.
-    public static Vuelo[] distComprendidas (Vuelo[][]cronogramaVuelos){
+    public static void distComprendidas (Vuelo[][]cronogramaVuelos){
         //Genero un arreglo de 50 vuelos auxiliar para no recorrer dos veces la lista de vuelos
         Vuelo[] vuelosFiltrados = new Vuelo[100];
-        int dist1,dist2,i,j;
-        i=0;
+        int dist1,dist2,j;
         j=0;
         do {
             System.out.println("Ingrese la primera distancia (menor): ");
@@ -292,7 +292,9 @@ public class Opciones {
         for (int k =0; k<j; k++){
             vuelosComprendidos[k]=vuelosFiltrados[k];
         }
-        return vuelosComprendidos;
+        for (int i=0; i<vuelosComprendidos.length;i++){
+            System.out.println(vuelosComprendidos[i] + " ");
+        }
     }
 
     //PUNTO9: Calcular en forma recursiva la cantidad de horarios sin vuelos en la semana.
@@ -335,7 +337,7 @@ public class Opciones {
         int pos = -1;
         boolean encontrado = false;
         int i = 0;
-        while(i < rutas.length && !encontrado){
+        while(rutas[i]!=null && i < rutas.length && !encontrado){
           if(rutas[i] != null && rutas[i].getNumRuta().equalsIgnoreCase(numeroRuta)){
             pos = i;
             encontrado = true;
@@ -349,7 +351,7 @@ public class Opciones {
         int pos = -1;
         boolean encontrado = false;
         int i = 0;
-        while(i < aviones.length && !encontrado){
+        while(aviones[i]!=null && i < aviones.length && !encontrado){
           if(aviones[i] != null && aviones[i].getIDavion().equalsIgnoreCase(matricula)){
             pos = i;
             encontrado = true;
@@ -418,6 +420,16 @@ public class Opciones {
                 break;
         }
         return num;
+    }
+    public static int convertirHora(String hora) {
+        return Integer.parseInt(hora.split(":")[0])-8;
+    }
+    public static void soutVuelos(Vuelo[][] unvuelo){
+        for (int i=0; i<unvuelo.length;i++){
+            for (int j=0; j<unvuelo[0].length;j++){
+                System.out.println(unvuelo[i][j]);
+            }
+        }
     }
 }
 

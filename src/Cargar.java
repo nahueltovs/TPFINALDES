@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -22,23 +23,20 @@ public class Cargar {
       elegir.setCurrentDirectory(new File(System.getProperty("user.dir")));
     }
     
-    public static void cargarArchivos(){
+    public static void cargarArchivos(Avion[] aviones, Ruta[] rutas, Vuelo[][] vuelos){
       // En el caso de que se cargue el archivo se ejecuta la sentencia.
-      Avion[] aviones = cargarAviones();
-      Ruta[] rutas = cargarRutas();
-      Vuelo[] vuelos = cargarVuelos(aviones, rutas);
-;
-      for (Vuelo vuelo : vuelos) {
-        if(vuelo != null){
-          System.out.println(vuelo.toString());
+      aviones = cargarAviones(aviones);
+      rutas = cargarRutas(rutas);
+      vuelos = cargarVuelos(aviones, rutas, vuelos);
+      for (int i = 0; i < vuelos.length; i++) {
+        for (int j = 0; j < vuelos[i].length; j++) {
+            if (vuelos[i][j] != null) {
+                System.out.println("Dia " + i + ", Hora " + (j + 8) + ":00 --> " + vuelos[i][j]);
+            }
         }
-        
-      }
-
     }
-
-    public static Avion[] cargarAviones(){
-      Avion[] aviones = new Avion[50];
+  }
+    public static Avion[] cargarAviones(Avion[] aviones){
       // O sea digamos, al utilizar diferentes sistemas operativos, no trabajan las direcciones de la misma manera
       // asi que esta forma que logro implementar aca, es realmente mas util a la hora de seleccionar los archives y no genere algun tipo de error en el imput.
       // En este caso, se selecciona el archivo de aviones.txt
@@ -70,8 +68,7 @@ public class Cargar {
       return aviones;
     }
 
-    public static Ruta[] cargarRutas(){
-        Ruta[] rutas = new Ruta[50];
+    public static Ruta[] cargarRutas(Ruta[] rutas){
         try {
             System.out.println("Seleccionar archivo de rutas: ");
             int returnVal = elegir.showOpenDialog(null);
@@ -99,8 +96,7 @@ public class Cargar {
         return rutas;
     }
 
-    public static Vuelo[] cargarVuelos(Avion[] aviones, Ruta[] rutas){
-        Vuelo[] vuelos = new Vuelo[150];
+    public static Vuelo[][] cargarVuelos(Avion[] aviones, Ruta[] rutas, Vuelo[][] vuelos){
         try {
             System.out.println("Seleccionar archivo de vuelos: ");
             int returnVal = elegir.showOpenDialog(null);
@@ -109,21 +105,18 @@ public class Cargar {
               System.out.println("Se selecciono: " + archivo.getName());
               if(!archivo.getName().endsWith(".txt") || !archivo.getName().equalsIgnoreCase("vuelos.txt")){
                 throw new IOException("El archivo seleccionado no es vuelos.txt");
-              }else {
-                int cantidadVuelos = Files.readAllLines(archivo.toPath()).size();
-                for(int i = 0; i < cantidadVuelos; i++){
-                  String[] datos = Files.readAllLines(archivo.toPath()).get(i).split(";");
-                  //VALIDO QUE LA LINEA NO ESTE VACIA
-                  if(datos != null){
+              }else  {
+                List<String> lineas = Files.readAllLines(archivo.toPath());
+                for (String linea : lineas) {
+                    String[] datos = linea.split(";");
+                    int fila = Opciones.stringADia(datos[3]);
+                    int columna = Opciones.convertirHora(datos[4]);
                     int posAvion = Opciones.buscarPosAvion(aviones, datos[1]);
                     int posRuta = Opciones.buscarPosRuta(rutas, datos[2]);
-                    System.out.println("Posicion avion: " + posAvion);
-                    System.out.println("Posicion ruta: " + posRuta);
-                    if(posAvion != -1 && posRuta != -1){
-                    vuelos[i] = new Vuelo(datos[0], aviones[posAvion], rutas[posRuta],datos[3],datos[4]);
-                    }
-                    System.out.println("Vuelo cargado numero: " + i);
-                  }
+                    
+                    // Asignar vuelo a la posicion [fila][columna]
+                    vuelos[fila][columna] = new Vuelo(datos[0], aviones[posAvion], rutas[posRuta], datos[3], datos[4]);
+                    System.out.println("Vuelo cargado en posicion: [" + fila + "][" + columna + "]");
                 }
               }
             }else{
@@ -135,6 +128,5 @@ public class Cargar {
         return vuelos;
     }
     public static void main(String[] args) {
-      cargarArchivos();
     }
 }
