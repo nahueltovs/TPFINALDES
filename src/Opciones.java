@@ -229,10 +229,12 @@ public class Opciones {
         return cantPasaj;
     }
     private static int calcularPromedio(Vuelo[][] cronograma, int i, int j, int contador) {
-        int promedio = contador;
-        if (i < cronograma.length){
-            if (j >= cronograma[i].length){
-                promedio = calcularPromedio(cronograma, i + 1, 0, contador);
+        int promedio = 0;
+        if (i >= cronograma.length){
+            promedio = contador;
+        }else{
+            if (j >= cronograma[0].length){
+                promedio = calcularPromedio(cronograma, i+1, 0, contador);
             }else{
                 if (cronograma[i][j] != null && cronograma[i][j].getAterrizo()){
                     contador++;
