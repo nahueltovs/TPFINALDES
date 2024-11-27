@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 import TDA.Avion;
@@ -33,7 +36,9 @@ public class Opciones {
                         pasajerosVolaron(vuelos, aviones);
                         break;
                     case 5:
-                        System.out.println("bruh");
+                        System.out.println("Ingrese el dia a ordenar: ");
+                        String diaParaOrdenar = sc.nextLine();
+                        exporteResultados(listVuelos(vuelos, diaParaOrdenar));
                         break;
                     case 6:
                         mostrarDatAvion(aviones);
@@ -237,7 +242,105 @@ public class Opciones {
         }
         return promedio;
     }
-    //PUNTO6: 
+    //PUNTO6: Mostrar para un día dado, la lista de vuelos ordenada por distancia en kilómetros en forma ascendente en un archivo de texto.
+    public static Vuelo[] listVuelos (Vuelo[][] cronograma, String dia){
+        int fila = stringADia(dia);
+        int cantidadVuelos = 0;
+        for (int i=0;i<cronograma[0].length;i++){
+            if (cronograma[fila][i]!=null){
+                cantidadVuelos++;
+            }
+        }
+        Vuelo[]vuelosArreglados = new Vuelo[cantidadVuelos];
+        int aux=0;
+        for (int j=0;j<cronograma[0].length;j++){
+            if (cronograma[fila][j]!=null){
+                vuelosArreglados[aux]=cronograma[fila][j];
+                aux++;
+            }
+        }
+        return vuelosArreglados;
+    }
+    //UTILICE INSERCION YA QUE SE TRATA DE UN ARREGLO CORTO (NO MAS DE 14 ELEMENTOS)
+    public static void ordenadoInsercion(Vuelo[] nuevosVuelos){
+        int j,i,n;
+        Vuelo aux;
+        n = nuevosVuelos.length;
+        for (i=1;i<n;i++){
+            aux=nuevosVuelos[i];
+            j=i;
+            while(j>0 && aux.getDistVuelo()<nuevosVuelos[j-1].getDistVuelo()){
+                nuevosVuelos[j]=nuevosVuelos[j-1];
+                j--;
+            }
+            nuevosVuelos[j]=aux;
+        }
+    }
+    //ORDENADO HEAPSORT (EL QUE TOCO DESPUES DE HACER LA OPERACION)
+    public static void ordenadoHeapSort (Vuelo[] nuevVuelos){
+        int n = nuevVuelos.length;
+        for (int i=n/2-1;i>=0;i--){
+            reacomodarHeap(nuevVuelos,n,i);
+        }
+        //almacenamos elementos del arreglo
+        for (int i=n-1;i>0;i--){
+            Vuelo aux = nuevVuelos[0];
+            nuevVuelos[0]=nuevVuelos[i];
+            nuevVuelos[i]=aux;
+            reacomodarHeap(nuevVuelos, i, 0);
+        }
+    }
+    //Metodo exclusivo del HeapSort
+    private static void reacomodarHeap (Vuelo[] nuevVuelos, int n, int i){
+        int mayor = i;
+        int izq = 2*i+1;
+        int der = 2*i+2;
+        if (izq<n&&nuevVuelos[izq].getDistVuelo()>nuevVuelos[mayor].getDistVuelo()){
+            mayor = izq;
+        }
+        if (der<n&&nuevVuelos[der].getDistVuelo()>nuevVuelos[mayor].getDistVuelo()){
+            mayor = der;
+        }
+        if (mayor!=i){
+            Vuelo aux = nuevVuelos[i];
+            nuevVuelos[i]=nuevVuelos[mayor];
+            nuevVuelos[mayor]=aux;
+            reacomodarHeap(nuevVuelos, n, mayor);
+        }
+    }
+    //Creo el archivo de texto
+    public static void exporteResultados(Vuelo[] listVuelos){
+        Vuelo[] listaInsercion = listVuelos;
+        Vuelo[] listaHeapSort = listVuelos;
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("resultados.txt"))){
+            //Uso un medidor de tiempo de ejecucion
+            long startTime = System.nanoTime();
+            ordenadoInsercion(listaInsercion);
+            long endTime = System.nanoTime();
+            long durationInsercion = endTime - startTime;
+
+            writer.write("Ordenamiento por Insercion:\n");
+            writer.write("Tiempo de ejecucion: " +durationInsercion+" nanosegundos"+"\n");
+            writer.write("Vuelos ordenados por distancia:\n");
+            for (int i=0; i<listaInsercion.length;i++){
+                writer.write(listaInsercion[i].toString()+"\n");
+            }
+            long startTime2 = System.nanoTime();
+            ordenadoHeapSort(listaHeapSort);
+            long endTime2 = System.nanoTime();
+            long durationHeapSort = endTime2-startTime2;
+            writer.write("Ordenamiento por HeapSort:\n");
+            writer.write("Tiempo de ejecucion: "+durationHeapSort+" nanosegundos"+"\n");
+            for (int j=0; j<listaHeapSort.length; j++){
+                writer.write(listaHeapSort[j].toString()+"\n");
+            }
+            writer.close();
+        } catch(IOException e){
+            System.out.println("Error al escribir en el archivo: "+e.getMessage());
+        }
+    }
+
+
 
     //PUNTO 7: Mostrar los datos de un avión dado
     public static void mostrarDatAvion(Avion[] listaAviones){
